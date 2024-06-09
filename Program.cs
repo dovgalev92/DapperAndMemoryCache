@@ -1,4 +1,5 @@
 using DapperMemoryCache.DbContext;
+using DapperMemoryCache.CastomServices;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -6,6 +7,7 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllers();
 builder.Services.AddSingleton<DapperContext>();
+builder.Services.AddReposService();
 builder.Services.AddMemoryCache();
 
 var app = builder.Build();
