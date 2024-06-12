@@ -12,8 +12,8 @@ namespace DapperMemoryCache.ImplementationRepos
     {
         private readonly DapperContext _context;
         private readonly IMemoryCache _memoryCache;
-        private readonly ILogger _logger;
-        public ProgrammerRepos(DapperContext context, IMemoryCache memoryCache, ILogger logger)
+        private readonly ILogger<ProgrammerRepos> _logger;
+        public ProgrammerRepos(DapperContext context, IMemoryCache memoryCache, ILogger<ProgrammerRepos> logger)
         {
             _context = context;
             _memoryCache = memoryCache;
@@ -46,15 +46,31 @@ namespace DapperMemoryCache.ImplementationRepos
                 return programmer;
             }
         }
-
         public Task Delete(int idProgrammer)
         {
             throw new NotImplementedException();
         }
-
-        public Task<Programmer> GetByIdProgrammer(int programmerId)
+        public async Task<Programmer> GetByIdProgrammer(int programmerId)
         {
-            throw new NotImplementedException();
+            _logger.LogInformation($"Выполняется поиск программиста с ID {programmerId} в кэшe");
+            _memoryCache.TryGetValue(programmerId, out Programmer? programmer);
+            if (programmer != null)
+            {
+                Console.WriteLine($"{programmer.Name} получен из кэша");
+                return programmer;
+            }
+            else
+            {
+                _logger.LogInformation($"Выполняется запрос в бд для поиска программиста по ID {programmerId}");
+                var query = "Select * FROM Programmer where Id = @programmerId";
+                using (var connect = _context.CreateConnection())
+                {
+                    var getIdprogrammer = await connect.QuerySingleOrDefaultAsync<Programmer>(query, new { programmerId });
+                    _memoryCache.Set(programmerId, getIdprogrammer, new MemoryCacheEntryOptions().SetAbsoluteExpiration(TimeSpan.FromMinutes(5)));
+                    var result = getIdprogrammer is null ? throw new ArgumentNullException() : getIdprogrammer;
+                    return result;
+                }
+            }
         }
     }
 }
