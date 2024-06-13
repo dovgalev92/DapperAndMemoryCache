@@ -66,7 +66,13 @@ namespace DapperMemoryCache.ImplementationRepos
                 using (var connect = _context.CreateConnection())
                 {
                     var getIdprogrammer = await connect.QuerySingleOrDefaultAsync<Programmer>(query, new { programmerId });
-                    _memoryCache.Set(programmerId, getIdprogrammer, new MemoryCacheEntryOptions().SetAbsoluteExpiration(TimeSpan.FromMinutes(5)));
+                    _memoryCache.Set(programmerId, getIdprogrammer, new MemoryCacheEntryOptions().SetAbsoluteExpiration(TimeSpan.FromMinutes(5)).SetSize(3));
+                    var stat = _memoryCache.GetCurrentStatistics();
+                    if(stat != null)
+                    {
+                        _logger.LogInformation($"Количество элементов в кеше {stat.CurrentEntryCount}");
+                        _logger.LogInformation($"Размер элементов в кеше {stat.CurrentEstimatedSize}");
+                    }
                     var result = getIdprogrammer is null ? throw new ArgumentNullException() : getIdprogrammer;
                     return result;
                 }

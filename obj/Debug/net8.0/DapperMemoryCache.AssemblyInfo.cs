@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("DapperMemoryCache")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+cbc74f7a38f47270874d8c1582583331e3671714")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+6dcc2255dfcbb7e700963310db5bad19236a2969")]
 [assembly: System.Reflection.AssemblyProductAttribute("DapperMemoryCache")]
 [assembly: System.Reflection.AssemblyTitleAttribute("DapperMemoryCache")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
