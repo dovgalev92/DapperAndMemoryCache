@@ -27,5 +27,12 @@ namespace DapperMemoryCache.Controllers
         {
             return Ok(await _repos.GetByIdProgrammer(idProgrammer));
         }
+        [HttpDelete("{id}")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        public async Task<ActionResult> DeleteProgrammer(int id)
+        {
+            await _repos.Delete(id);
+            return Ok();
+        }
     }
 }

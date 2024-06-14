@@ -46,9 +46,26 @@ namespace DapperMemoryCache.ImplementationRepos
                 return programmer;
             }
         }
-        public Task Delete(int idProgrammer)
+        public async Task Delete(int idProgrammer)
         {
-            throw new NotImplementedException();
+            var query = "Delete From Programmer where Id = @idProgrammer";
+            _memoryCache.TryGetValue(idProgrammer, out Programmer? programmer);
+            if(programmer != null)
+            {
+                _memoryCache.Remove(idProgrammer);
+                var stat = _memoryCache.GetCurrentStatistics();
+                if(stat != null)
+                {
+                    _logger.LogInformation($"Количество элементов в кэше {stat.CurrentEntryCount}");
+                    _logger.LogInformation($"Размер элементов в кэше {stat.CurrentEstimatedSize}");
+                }
+                _logger.LogInformation($"{idProgrammer} удален из кэша");
+            }
+            using (var connect = _context.CreateConnection())
+            {
+                var deleteProgrammer = await connect.ExecuteAsync(query, new { idProgrammer });
+                _logger.LogInformation($"Данные удалены с бд");
+            } 
         }
         public async Task<Programmer> GetByIdProgrammer(int programmerId)
         {
